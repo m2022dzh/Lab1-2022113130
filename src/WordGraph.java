@@ -15,6 +15,7 @@ import java.util.Random;
 
 // C4 branch
 // 再次手动修改
+// B1 branch - redo
 public class WordGraph {
     private Map<String, WordNode> nodes; // 根据单词快速找到节点
 
