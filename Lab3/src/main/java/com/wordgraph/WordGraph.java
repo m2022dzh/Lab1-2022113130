@@ -51,6 +51,7 @@ public class WordGraph {
      */
     public void addEdge(String fromWord, String toWord) {
         WordNode fromNode = getOrCreateNode(fromWord);
+        WordNode toNode = getOrCreateNode(toWord);
         fromNode.addOutEdge(toWord);
     }
 
