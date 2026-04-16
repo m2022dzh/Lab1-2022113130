@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="9.2.1">
+<file name="D:\course\lab1\Lab1-git\Lab3\src\main\java\com\wordgraph\Main.java">
+<error line="147" column="28" severity="warning" message="名称 &apos;readWordsFromFile&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+</file>
+<file name="D:\course\lab1\Lab1-git\Lab3\src\main\java\com\wordgraph\WordGraph.java">
+<error line="39" column="21" severity="warning" message="名称 &apos;getOrCreateNode&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="52" column="17" severity="warning" message="名称 &apos;addEdge&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="60" column="17" severity="warning" message="名称 &apos;printGraph&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="76" column="20" severity="warning" message="名称 &apos;containsWord&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="88" column="25" severity="warning" message="名称 &apos;getBridgeWords&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="110" column="19" severity="warning" message="名称 &apos;generateNewText&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="144" column="19" severity="warning" message="名称 &apos;getShortestPath&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="224" column="19" severity="warning" message="名称 &apos;calcPageRank&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="292" column="25" severity="warning" message="名称 &apos;getAllWords&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="301" column="19" severity="warning" message="名称 &apos;getRandomWord&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="315" column="20" severity="warning" message="名称 &apos;hasOutEdges&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="326" column="19" severity="warning" message="名称 &apos;randomWalk&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+</file>
+<file name="D:\course\lab1\Lab1-git\Lab3\src\main\java\com\wordgraph\WordNode.java">
+<error line="17" column="33" severity="warning" message="名称 &apos;outEdges&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="34" column="17" severity="warning" message="名称 &apos;addOutEdge&apos; 必须匹配表达式： &apos;^[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*$&apos; 。" source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+</file>
+</checkstyle>
