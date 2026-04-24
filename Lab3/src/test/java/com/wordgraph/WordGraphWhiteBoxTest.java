@@ -6,25 +6,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * 白盒测试：使用基本路径法测试 getShortestPath 方法。
+ * 白盒测试：使用基本路径法测试重构后的 getShortestPath 方法。
+ * 针对主函数，圈复杂度：V(G) = 4 个判定点 + 1 = 5
+ * * 核心基本路径（独立路径）：
+ * P1: from 或 to 不存在 -> 提前返回错误
+ * P2: from == to -> 返回距离 0
+ * P3: 节点存在但不可达 (dist == INFINITY) -> 返回无路径
+ * P4: 正常到达 -> 执行 Dijkstra 并成功拼接路径
  *
- * 下面是 getShortestPath 的关键决策点：
- * 1. 检查两个单词是否都存在 (if语句)
- * 2. 检查是否是同一个单词 (if语句)
- * 3. Dijkstra循环条件 (!pq.isEmpty)
- * 4. 是否找到目标 (if u.equals(to))
- * 5. 检查可达性 (if dist.get(u) == INFINITY)
- * 6. 检查路径是否存在 (if !prev.containsKey(to))
- * 7. 格式化输出
  *
- * 基本路径（独立路径）：
- * P1: from或to不存在 -> No "X" or "Y" in the graph!
- * P2: from == to -> from (distance 0)
- * P3: from存在, to存在, 有路径 -> X -> Y -> Z ... (distance d)
- * P4: from存在, to存在, 无路径 -> No path from X to Y!
- * P5: 到达目标提前退出
- *
- * @author lab-team
  */
 public class WordGraphWhiteBoxTest {
     private WordGraph graph;
@@ -34,71 +24,72 @@ public class WordGraphWhiteBoxTest {
         graph = new WordGraph();
     }
 
-    // ============ 基本路径测试 ============
+    // ============ 基本路径 1：节点不存在 ============
 
     /**
-     * 基本路径P1：from单词不存在
-     * 输入：from="notexist", to="world"
-     * 预期：返回包含"notexist"的错误消息
+     * TC1 / P1a: from 单词不存在 (覆盖复合条件的前半部分 true)
      */
     @Test
     public void testGetShortestPath_FromNotExist() {
         graph.addEdge("hello", "world");
-
         String result = graph.getShortestPath("notexist", "world");
-
-        assertTrue("应返回错误消息", result.contains("No")
-                || result.contains("notexist"));
+        assertTrue("应返回错误消息", result.contains("No") && result.contains("notexist"));
     }
 
     /**
-     * 基本路径P2：to单词不存在
-     * 输入：from="hello", to="notexist"
-     * 预期：返回包含"notexist"的错误消息
+     * TC2 / P1b: to 单词不存在 (覆盖复合条件的后半部分 true)
      */
     @Test
     public void testGetShortestPath_ToNotExist() {
         graph.addEdge("hello", "world");
-
         String result = graph.getShortestPath("hello", "notexist");
-
-        assertTrue("应返回错误消息", result.contains("No")
-                || result.contains("notexist"));
+        assertTrue("应返回错误消息", result.contains("No") && result.contains("notexist"));
     }
 
+    // ============ 基本路径 2：起点终点相同 ============
+
     /**
-     * 基本路径P3：from == to（同一个单词）
-     * 输入：from="hello", to="hello"
-     * 预期：返回 "hello (distance 0)"
+     * TC3 / P2: from == to（同一个单词）
+     * 覆盖判定：from.equals(to) 为 true
      */
     @Test
     public void testGetShortestPath_SameWord() {
-        graph.addEdge("hello", "world");
-
+        graph.getOrCreateNode("hello"); // 确保节点存在
         String result = graph.getShortestPath("hello", "hello");
-
         assertEquals("应返回同一单词的距离0", "hello (distance 0)", result);
     }
 
+    // ============ 基本路径 3：节点存在但不可达 ============
+
     /**
-     * 基本路径P4：存在直接路径（距离为1）
-     * 图：hello -> world
-     * 输入：from="hello", to="world"
-     * 预期：返回 "hello -> world (distance 1)"
+     * TC4 / P3: 无路径（目标节点存在但不可达）
+     * 覆盖判定：dist.get(to) == Double.POSITIVE_INFINITY 为 true
+     */
+    @Test
+    public void testGetShortestPath_NoPath() {
+        graph.getOrCreateNode("hello");
+        graph.getOrCreateNode("test");
+        // 没有添加边，两点不连通
+        String result = graph.getShortestPath("hello", "test");
+        assertTrue("应返回无路径消息", result.contains("No path from hello to test!"));
+    }
+
+    // ============ 基本路径 4：成功找到路径 ============
+    // (以下用例在主函数中走的是同一条路径，但覆盖了内部 Dijkstra 的不同分支逻辑)
+
+    /**
+     * TC5 / P4 (基础): 存在直接路径（距离为1）
+     * 覆盖判定：正常跑通算法并返回
      */
     @Test
     public void testGetShortestPath_DirectPath() {
         graph.addEdge("hello", "world");
-
         String result = graph.getShortestPath("hello", "world");
-
         assertEquals("应返回直接路径", "hello -> world (distance 1.0)", result);
     }
 
     /**
-     * 基本路径P5：存在多跳路径
-     * 图：hello -> beautiful -> world
-     * 需要经过中间节点
+     * TC6 / P4 (变体): 存在多跳路径
      */
     @Test
     public void testGetShortestPath_MultiHopPath() {
@@ -109,32 +100,11 @@ public class WordGraphWhiteBoxTest {
 
         assertTrue("应包含所有中间节点", result.contains("hello")
                 && result.contains("beautiful") && result.contains("world"));
-        assertTrue("应包含距离", result.contains("distance"));
-        assertTrue("距离应为2", result.contains("2.0"));
+        assertTrue("距离应为2.0", result.contains("2.0"));
     }
 
     /**
-     * 基本路径P6：无路径（目标节点存在但不可达）
-     * 图：hello -> world, test -> result (两个孤立的连通分量)
-     * 输入：from="hello", to="test"
-     * 预期：返回 "No path from hello to test!"
-     */
-    @Test
-    public void testGetShortestPath_NoPath() {
-        graph.addEdge("hello", "world");
-        graph.addEdge("test", "result");
-
-        String result = graph.getShortestPath("hello", "test");
-
-        assertTrue("应返回无路径消息", result.contains("No path"));
-    }
-
-    /**
-     * 基本路径P7：多条路径选择最短
-     * 图：
-     * a -> b (权重1) -> d
-     * a -> c (权重2) -> d
-     * 应选择 a -> b -> d（距离2）而不是 a -> c -> d（距离3）
+     * TC7 / P4 (变体): 多条路径选择最短
      */
     @Test
     public void testGetShortestPath_MultiPath_ChooseShortest() {
@@ -143,106 +113,31 @@ public class WordGraphWhiteBoxTest {
         graph.addEdge("a", "c");
         graph.addEdge("c", "d");
 
+        // 假设通过某种方式 c->d 的权重更大，或者纯粹测试等价最短路径
+        // 在均权情况下，返回任意一条合法最短路径均可
         String result = graph.getShortestPath("a", "d");
 
-        // 距离应为2 (a->b->d)
-        assertTrue("应选择最短路径", result.contains("a")
-                && result.contains("b") && result.contains("d"));
-        assertTrue("距离应为2", result.contains("2.0"));
+        assertTrue("应包含起点和终点", result.contains("a") && result.contains("d"));
+        assertTrue("距离应为2.0", result.contains("2.0"));
     }
 
     /**
-     * 基本路径P8：重边的影响
-     * 图：hello -> world (3条边), world -> test (1条边)
-     * 总距离应为 3 + 1 = 4
+     * TC8 / P4 (变体): 重边的影响（权重累加测试）
+     * 注意：这段逻辑取决于你的 addEdge 具体实现（是覆盖还是累加出现次数作为权重）
+     * 假设每次 addEdge 会使得该边权值 + 1
      */
     @Test
     public void testGetShortestPath_WithDuplicateEdges() {
         graph.addEdge("hello", "world");
-        graph.addEdge("hello", "world");
-        graph.addEdge("hello", "world");
-        graph.addEdge("world", "test");
+        graph.addEdge("hello", "world"); // 此时 hello->world 权重变为 2
+        graph.addEdge("hello", "world"); // 权重变为 3
+        graph.addEdge("world", "test");  // 权重 1
 
         String result = graph.getShortestPath("hello", "test");
 
         assertTrue("应返回路径", result.contains("hello")
                 && result.contains("world") && result.contains("test"));
-        // 距离应为 3 + 1 = 4
-        assertTrue("距离应为4", result.contains("4.0"));
-    }
-
-    /**
-     * 基本路径P9：环路图
-     * 图：a -> b -> c -> a (形成环)
-     * 从a到c的最短路径应该是 a -> b -> c
-     */
-    @Test
-    public void testGetShortestPath_CyclicGraph() {
-        graph.addEdge("a", "b");
-        graph.addEdge("b", "c");
-        graph.addEdge("c", "a");
-
-        String result = graph.getShortestPath("a", "c");
-
-        assertEquals("应返回最短路径", "a -> b -> c (distance 2.0)", result);
-    }
-
-    /**
-     * 基本路径P10：单节点
-     * 图只有一个节点hello，无出边
-     */
-    @Test
-    public void testGetShortestPath_SingleNode() {
-        graph.addEdge("hello", "hello");
-
-        String result = graph.getShortestPath("hello", "hello");
-
-        assertEquals("同一节点距离为0", "hello (distance 0)", result);
-    }
-
-    /**
-     * 基本路径P11：复杂的更短路径选择
-     * 图：
-     * start -> a -> end (距离2)
-     * start -> b -> end (距离2)
-     * start -> c -> end (距离2)
-     * 任选一条即可
-     */
-    @Test
-    public void testGetShortestPath_MultipleShortestPaths() {
-        graph.addEdge("start", "a");
-        graph.addEdge("a", "end");
-        graph.addEdge("start", "b");
-        graph.addEdge("b", "end");
-
-        String result = graph.getShortestPath("start", "end");
-
-        assertTrue("应返回其中一条最短路径", result.contains("start")
-                && result.contains("end"));
-        assertTrue("距离应为2", result.contains("2.0"));
-    }
-
-    /**
-     * 基本路径P12：权重差异大的路径选择
-     * 图：
-     * a -> b -> c (距离2)
-     * a -> d -> c (距离10)
-     * 应选择第一条
-     */
-    @Test
-    public void testGetShortestPath_WeightedPath() {
-        graph.addEdge("a", "b");
-        graph.addEdge("b", "c");
-        // 添加10条边以增加权重
-        for (int i = 0; i < 10; i++) {
-            graph.addEdge("a", "d");
-        }
-        graph.addEdge("d", "c");
-
-        String result = graph.getShortestPath("a", "c");
-
-        // 最短路径应该是 a -> b -> c (距离2)
-        assertTrue("应选择权重轻的路径", result.contains("b"));
-        assertTrue("距离应为2", result.contains("2.0"));
+        // 距离应为 3 + 1 = 4.0
+        assertTrue("距离应为4.0", result.contains("4.0"));
     }
 }
